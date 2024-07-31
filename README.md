@@ -6,7 +6,7 @@
 
 This Flask web app allows you to analyse a chronological series of APK files, extract subdomains, domains, and URLs, and visualise their presence across different versions of Android apps. It uses the AndroZoo research dataset and several Python libraries (such as Androguard) to download, process, and visualise the data.
 
-If you are not familiar with git or running python code, we have included an additional tutorial guide inside the repository. Please click here to view.
+If you are not familiar with git or running python code, we will soon add additional guidance.
 
 
 ![Janus UI](./janus.png)
