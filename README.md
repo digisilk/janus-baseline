@@ -1,5 +1,5 @@
 
-# JANUS (Beginner Version)
+# JANUS (Baseline Version)
 # See APK endpoints evolution over time
 
 ![Sponsors](./sponsors.png)
