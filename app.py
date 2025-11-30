@@ -11,117 +11,35 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from flask import Flask, render_template, request, send_file, redirect, url_for, jsonify, session
-import plotter
+import dash
+import dash_bootstrap_components as dbc
+import os
+from flask_login import LoginManager, UserMixin
+import secrets
 
-app = Flask(__name__)
-app.secret_key = 'secret_key'
+# Get environment variables with defaults
+debug_mode = os.environ.get('DASH_DEBUG_MODE', 'True').lower() == 'true'
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        session['apikey'] = request.form.get('apikey')
-        session['packages'] = request.form.get('packages').split(',')
-        session['start_date'] = request.form.get('start_date')
-        session['end_date'] = request.form.get('end_date')
+# Initialize the Dash app
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.JOURNAL], title="JANUS")
+server = app.server
+app.config.suppress_callback_exceptions = True
 
-        if 'confirm' in request.form:
-            # Redirect to confirmation page with the form data
-            return redirect(url_for('confirmation'))
+# Set a secret key for Flask session management
+# In production, you should use a more secure method to generate and store this key
+server.secret_key = os.environ.get('SECRET_KEY', secrets.token_hex(16))
 
-        elif 'submit' in request.form:
-            try:
-                plot_file_path = plotter.run(session.get('apikey'), session.get('packages'), session.get('start_date'), session.get('end_date'))
-                message = 'Success!'
-            except Exception as e:
-                message = str(e)
-                plot_file_path = None
+# Configure Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(server)
+login_manager.login_view = '/login'
 
-            return redirect(url_for('result', message=message, plot_file_path=plot_file_path))
+# User class for Flask-Login
+class User(UserMixin):
+    def __init__(self, username):
+        self.id = username
 
-    return render_template('index.html')
-
-
-
-@app.route('/result', methods=['GET'])
-def result():
-    message = request.args.get('message')
-    plot_file_path = request.args.get('plot_file_path')
-
-    return render_template('result.html', message=message, plot_file_path=plot_file_path)
-
-
-@app.route('/download', methods=['GET'])
-def download():
-    plot_file_path = request.args.get('plot_file_path')
-    if plot_file_path:
-        return send_file(plot_file_path, mimetype='application/zip', as_attachment=True)
-    else:
-        return "No plot file available."
-
-
-@app.route('/confirmation', methods=['GET', 'POST'])
-def confirmation():
-    if request.method == 'POST':
-
-        if 'submit' in request.form:
-            print('submit')
-            try:
-                plot_file_path = plotter.run(session.get('apikey'), session.get('packages'), session.get('start_date'),
-                                             session.get('end_date'))
-                message = 'Success!'
-            except Exception as e:
-                message = str(e)
-                plot_file_path = None
-
-            return redirect(url_for('result', message=message, plot_file_path=plot_file_path))
-
-
-    else:
-        apikey = session.get('apikey')
-        packages = session.get('packages')
-        start_date = session.get('start_date')
-        end_date = session.get('end_date')
-        desired_versions = session.get('desired_versions')
-
-        csv_path = "latest_with-added-date.csv"
-        total_apps = 0
-
-        start_date += " 00:00:00.000000"
-        end_date += " 00:00:00.000000"
-
-        for package in packages:
-            total_apps += plotter.count_apps(package, csv_path, start_date, end_date)
-
-
-        # Render confirmation page
-        return render_template('confirmation.html',
-                               apikey=apikey,
-                               packages=packages,
-                               start_date=start_date,
-                               end_date=end_date,
-                               desired_versions=desired_versions,
-                               version_count=total_apps)
-
-
-
-@app.route('/count', methods=['POST'])
-def count_apps_ui():
-
-    csv_path = "latest_with-added-date.csv"
-    packages = request.form.get('packages').split(',')
-    start_date = request.form.get('start_date')
-    end_date = request.form.get('end_date')
-
-    start_date += " 00:00:00.000000"
-    end_date += " 00:00:00.000000"
-
-    total_apps = 0
-    for package in packages:
-        total_apps += plotter.count_apps(package, csv_path, start_date, end_date)
-
-    return jsonify({'total_apps': total_apps})
-
-
-if __name__ == "__main__":
-    app.run(debug=False)
+# User loader callback
+@login_manager.user_loader
+def load_user(username):
+    return User(username)
