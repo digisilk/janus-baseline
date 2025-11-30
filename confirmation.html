@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+                }
+        .btn {
+            box-sizing: border-box;
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px 0 22px 0;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.9;
+            transition: 0.3s;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .btn:hover {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+        .btn-primary {
+            background: #007bff;
+            width: 100%
+        }
+        .btn-secondary {
+            background: rgb(34, 68, 95);
+            width: 100%
+        }
+
+        input[type="submit"], button {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 22px 0;
+        background-color: rgb(187, 92, 8);
+        color: white;
+        border: none;
+        cursor: pointer;
+        opacity: 0.9;
+        transition: 0.3s;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 4px;
+        }
+        input[type="submit"]:hover, button:hover {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Confirmation</h2>
+        {% if version_count <= 10 %}
+            <p>We found {{version_count}} versions of your app across the chosen date range.</p>
+            <form method="POST">
+            <input type="submit" name="submit" value="Click here to download visualizations">
+            </form>
+        {% else %}
+            <p>We found {{version_count}} versions of your app across the chosen date range. These are too many versions to analyze.</p>
+            <form method="POST">
+                <input type="submit" name="submit" value="Click here to download visualizations for 10 versions across your date range">
+            </form>
+        {% endif %}
+        <a class="btn btn-secondary" href="{{ url_for('index') }}">Go back and change your start and/or end date</a>
+
+    </div>
+</body>
+</html>

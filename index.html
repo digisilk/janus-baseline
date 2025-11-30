@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JANUS - DIGISILK & AndroZoo, APK Endpoint Extractor</title>
+    <head>
+    <title>JANUS - DIGISILK & AndroZoo, APK Endpoint Extractor</title>
+    <style>
+    h1 {
+        text-align: center;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+
+    h2 {
+        text-align: center;
+    }
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+    }
+    .container {
+        width: 80%;
+        margin: auto;
+        overflow: hidden;
+    }
+    form, .app-count-section, .info-section {
+        background: #fff;
+        padding: 20px;
+        margin-top: 50px;
+        box-shadow: 0px 0px 20px 0px #555;
+    }
+    label {
+        font-weight: bold;
+    }
+    input[type="text"], textarea {
+        width: 98%;
+        padding: 10px;
+        margin: 5px 0 22px 0;
+        border: none;
+        background: #f1f1f1;
+    }
+    textarea {
+        height: 200px; /* Adjusted height */
+        resize: none;
+    }
+    input[type="submit"], button {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0 22px 0;
+        background-color: rgb(187, 92, 8);
+        color: white;
+        border: none;
+        cursor: pointer;
+        opacity: 0.9;
+        transition: 0.3s;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 4px;
+    }
+    input[type="submit"]:hover, button:hover {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    .loader {
+        border: 8px solid #f3f3f3; /* Light grey */
+        border-top: 8px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 2s linear infinite;
+        margin: 20px auto 0;
+        display: none;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#count-apps-btn').on('click', function(event) {
+                event.preventDefault();
+
+                // Show the spinner
+                $('.loader').show();
+
+                // Make AJAX request
+                $.ajax({
+                    url: '/count',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response) {
+                        // Display app count
+                        $('#app-count').val(response.total_apps);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    },
+                    complete: function() {
+                        // Hide the spinner
+                        $('.loader').hide();
+                    }
+                });
+            });
+
+            $('#save-session-btn').on('click', function(event) {
+                event.preventDefault();
+
+                // Get form data
+                var form_data = $('form').serializeArray().reduce(function(obj, item) {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+
+                // Save form data to sessionStorage
+                sessionStorage.setItem('form_data', JSON.stringify(form_data));
+
+                // Redirect to the confirmation page
+                window.location.href = '/confirmation';
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>｡*⋆JANUS⋆*｡</h1>
+        <h2>See APK endpoints evolution over time | DIGISILK & AndroZoo</h2>
+
+        <form method="POST">
+            <label>API Key:</label><br>
+            <i>Get your personal API key to AndroZoo at <a href="https://androzoo.uni.lu/access">https://androzoo.uni.lu/access</a></i><br>
+            <input type="text" name="apikey" value=""><br>
+            <label>Package ID:</label><br>
+            <i>To find out the correct APK name, search for the app you want to analyze in any app store, e.g. <a href="https://play.google.com/">https://play.google.com/</a>, click on the name of the app, and copy the text that appears in the address bar after the words "id="</i><br>
+            <input type="text" name="packages" value="com.example.app"><br>
+            <label>Start Date (YYYY-MM-DD):</label><br>
+            <i>The default setting is the earliest version of the APK found in AndroZoo. Change the date if you want a different range.</i><br>
+            <input type="text" name="start_date" value="2000-01-01"><br>
+            <label>End Date (YYYY-MM-DD):</label><br>
+            <i>The default setting is the latest version of the APK found in AndroZoo. Change the date if you want a different range.</i><br>
+            <input type="text" name="end_date" value="2023-01-01"><br>
+            <input type="submit" name="confirm" value="Submit">
+        </form>
+    </div>
+</body>
+</html>
