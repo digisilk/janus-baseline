@@ -27,7 +27,7 @@ import os
 # CONFIGURATION SCENARIOS:
 #
 # Scenario 1: User Testing/Demo (Current Setup)
-# - ANDROZOO_API_KEY = "2251d09097a1602382d5810f44c96f46daca1ef1453c2228a1e923aab795fd72"
+# - ANDROZOO_API_KEY = "##############################"
 # - SHOW_API_KEY_INPUT = True
 # - OVERRIDE_API_KEY_FROM_UI = True
 # Result: Users don't see API key input, shared key is used automatically
@@ -46,7 +46,7 @@ import os
 
 # AndroZoo API Key
 # Option 1: Set it directly here for shared/demo use
-ANDROZOO_API_KEY = "0de7032f57c9da0d3355bac854244f0b107d6d1f507fd184ffc139e46d0e9c45"  # API key for testing
+ANDROZOO_API_KEY = "##############"  # API key for testing
 
 # Option 2: Leave as None to require user input or environment variable
 #ANDROZOO_API_KEY = None
