@@ -24,11 +24,11 @@ import json
 def get_credentials():
     # Default login details
     default_credentials = {
-    "admin": "humanities_informatics_2025",
-    "elisa": "janus_25_androzoo",
-    "ashwin": "janus_25_androzoo", 
-    "researcher": "janus_andro_analysis25",
-    "analyst": "janus_andro_analysis25"
+    "###": "###",
+    "###": "###",
+    "###": "###", 
+    "###": "###",
+    "###": "###"
     }
     
     # Check for credentials file
