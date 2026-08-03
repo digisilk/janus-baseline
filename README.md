@@ -30,8 +30,8 @@ Ensure you have met the following requirements:
 
 1. **Clone the repository:**
 ```
-   git clone https://github.com/digisilk/janus_beginner.git
-   cd janus_beginner
+   git clone https://github.com/digisilk/janus-baseline.git
+   cd janus-baseline
 ```
 2. **Create a virtual environment:**
 ```
